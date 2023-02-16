@@ -1,7 +1,5 @@
 import sqlite3
 
-dbname = "biblioteca.db"
-
 def initializedb(dbname):
     
     con = sqlite3.connect(dbname)
@@ -9,6 +7,8 @@ def initializedb(dbname):
 
     cur.execute("CREATE TABLE IF NOT EXISTS livros(cod INTEGER PRIMARY KEY, titulo varchar(20) NOT NULL, autor varchar(20) NOT NULL)")
     
+    con.commit()
+
     con.close()
 
 def create(dbname, titulo, autor):

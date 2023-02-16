@@ -5,14 +5,52 @@ import functions
 def addbook():
     global entrytitle, entryauthor, newwindow
     
-    title = entrytitle.get()
-    author = entryauthor.get()
+    title = entrytitle.get(1.0, END)
+    author = entryauthor.get(1.0, END)
     
     functions.create('biblioteca.db', title, author)
 
-    #insira codigo para mostrar livros aqui
+    refreshtreeview()
 
-    newwindow.quit()
+    newwindow.destroy()
+
+def removebook():
+
+    global newwindow, entrybookid
+
+    bookid = entrybookid.get(1.0, END)
+    
+    functions.delete('biblioteca.db', bookid)
+
+    refreshtreeview()
+
+    newwindow.destroy()
+
+def updatebook():
+
+    global newwindow, entryid, entryauthor, entrytitle
+    
+    bookid = entryid.get(1.0, END)
+    bookauthor = entryauthor.get(1.0, END)
+    booktitle = entrytitle.get(1.0, END)
+
+    functions.update('biblioteca.db', bookid, booktitle, bookauthor)
+
+    refreshtreeview()
+
+    newwindow.destroy()
+
+def refreshtreeview():
+
+    global lista
+
+    for item in lista.get_children():
+        lista.delete(item)
+
+    livros = functions.read('biblioteca.db')
+
+    for livro in livros:
+        lista.insert('', END, values = livro)
 
 def openaddwindow():
 
@@ -33,7 +71,7 @@ def openaddwindow():
     buttonok = Button(newwindow, text = "OK", command = addbook)
     buttonok.grid(row = 2, column = 0)
     
-    buttoncancel = Button(newwindow, text = "Cancel", command = newwindow.quit())
+    buttoncancel = Button(newwindow, text = "Cancel", command = newwindow.destroy)
     buttoncancel.grid(row = 2, column = 1)
 
 def removebookwindow():
@@ -45,10 +83,10 @@ def removebookwindow():
     entrybookid = Entry(newwindow)
     entrybookid.grid(row = 0, column = 1)
 
-    buttonok = Button(newwindow, text = 'OK')
+    buttonok = Button(newwindow, text = 'OK', command = removebook)
     buttonok.grid(row = 1,column = 0)
 
-    buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.quit())
+    buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.destroy)
     buttoncancel.grid(row = 1, column = 1)
 
 def updatebookwindow():
@@ -70,12 +108,13 @@ def updatebookwindow():
     entryauthor = Entry(newwindow)
     entryauthor.grid(row = 2, column = 1)
 
-    buttonok = Button(newwindow, text = 'OK')
+    buttonok = Button(newwindow, text = 'OK', command = updatebook)
     buttonok.grid(row = 3, column = 0)
 
-    buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.quit())
+    buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.destroy)
     buttoncancel.grid(row = 3, column = 1)
 
+functions.initializedb('biblioteca.db')
 
 root = Tk()
 
@@ -94,7 +133,17 @@ buttonchange.grid(row = 0, column = 2)
 framedown = Frame(root)
 framedown.pack()
 
-lista = ttk.Treeview(framedown, selectmode = 'browse', height = 10, columns = ('Id', 'Title', 'Author'), displaycolumns = '#all')
+lista = ttk.Treeview(framedown, selectmode = 'browse', height = 10, columns = ('id', 'title', 'author'), show='headings')
+
+lista.heading('id', text = 'Id')
+lista.heading('title', text = 'Title')
+lista.heading('author', text = 'Author')
+
+livrostreeview = functions.read('biblioteca.db')
+
+for livro in livrostreeview:
+    lista.insert('', END, values = livro)
+
 lista.pack()
 
 if __name__ == '__main__' :
