@@ -3,16 +3,14 @@ from tkinter import *
 import functions
 
 def addbook():
-    global entrytitle, entryauthor, newwindow
+    global title, author
     
-    title = entrytitle.get(1.0, END)
-    author = entryauthor.get(1.0, END)
-    
-    functions.create('biblioteca.db', title, author)
-
-    refreshtreeview()
-
-    newwindow.destroy()
+    if title.get() == '' and author.get == '':
+        pass
+    else:
+        functions.create('biblioteca.db', title.get(), author.get())
+        
+        refreshtreeview()
 
 def removebook():
 
@@ -40,6 +38,16 @@ def updatebook():
 
     newwindow.destroy()
 
+def variableaddbook(titleentry, authorentry, janela):
+
+    global title, author
+
+    title.set(titleentry.get())
+    author.set(authorentry.get())
+    
+    addbook()
+    
+    janela.destroy()
 def refreshtreeview():
 
     global lista
@@ -68,7 +76,7 @@ def openaddwindow():
     entryauthor = Entry(newwindow)
     entryauthor.grid(row = 1, column = 1)
 
-    buttonok = Button(newwindow, text = "OK", command = addbook)
+    buttonok = Button(newwindow, text = "OK", command = lambda:variableaddbook(entrytitle, entryauthor, newwindow))
     buttonok.grid(row = 2, column = 0)
     
     buttoncancel = Button(newwindow, text = "Cancel", command = newwindow.destroy)
@@ -117,6 +125,10 @@ def updatebookwindow():
 functions.initializedb('biblioteca.db')
 
 root = Tk()
+
+title = StringVar()
+author = StringVar()
+cod = IntVar()
 
 frametop = Frame(root)
 frametop.pack(side = TOP)
