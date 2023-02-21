@@ -14,30 +14,27 @@ def addbook():
 
 def removebook():
 
-    global newwindow, entrybookid
+    global cod
 
-    bookid = entrybookid.get(1.0, END)
-    
-    functions.delete('biblioteca.db', bookid)
+    if cod.get() == 0:
+        pass
+    else:
+        functions.delete('biblioteca.db', cod.get())
 
-    refreshtreeview()
-
-    newwindow.destroy()
+        refreshtreeview()
 
 def updatebook():
 
-    global newwindow, entryid, entryauthor, entrytitle
+    global title, author, cod
     
-    bookid = entryid.get(1.0, END)
-    bookauthor = entryauthor.get(1.0, END)
-    booktitle = entrytitle.get(1.0, END)
+    if title.get() == '' and author.get() == '' and cod.get() == 0:
+        pass
+    else:
+        functions.update('biblioteca.db', cod.get(), title.get(), author.get())
 
-    functions.update('biblioteca.db', bookid, booktitle, bookauthor)
+        refreshtreeview()
 
-    refreshtreeview()
-
-    newwindow.destroy()
-
+    
 def variableaddbook(titleentry, authorentry, janela):
 
     global title, author
@@ -48,6 +45,29 @@ def variableaddbook(titleentry, authorentry, janela):
     addbook()
     
     janela.destroy()
+
+def variableremovebook(entrycod, janela):
+
+    global cod
+
+    cod.set(entrycod.get())
+    
+    removebook()
+
+    janela.destroy()
+
+def variableupdatebook(entrycod, entrytitle, entryauthor, janela):
+
+    global title, author, cod
+
+    cod.set(entrycod.get())
+    title.set(entrytitle.get())
+    author.set(entryauthor.get())
+
+    updatebook()
+
+    janela.destroy()
+
 def refreshtreeview():
 
     global lista
@@ -91,7 +111,7 @@ def removebookwindow():
     entrybookid = Entry(newwindow)
     entrybookid.grid(row = 0, column = 1)
 
-    buttonok = Button(newwindow, text = 'OK', command = removebook)
+    buttonok = Button(newwindow, text = 'OK', command = lambda: variableremovebook(entrybookid, newwindow))
     buttonok.grid(row = 1,column = 0)
 
     buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.destroy)
@@ -116,7 +136,7 @@ def updatebookwindow():
     entryauthor = Entry(newwindow)
     entryauthor.grid(row = 2, column = 1)
 
-    buttonok = Button(newwindow, text = 'OK', command = updatebook)
+    buttonok = Button(newwindow, text = 'OK', command = lambda:variableupdatebook(entryid, entrytitle, entryauthor, newwindow))
     buttonok.grid(row = 3, column = 0)
 
     buttoncancel = Button(newwindow, text = 'Cancel', command = newwindow.destroy)
