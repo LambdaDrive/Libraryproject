@@ -162,6 +162,9 @@ buttonremove.grid(row = 0, column = 1)
 buttonchange = Button(frametop, text = 'Update book info', command = updatebookwindow)
 buttonchange.grid(row = 0, column = 2)
 
+buttonexit = Button(frametop, text = 'Exit', command = root.destroy)
+buttonexit.grid(row = 0, column = 3)
+
 framedown = Frame(root)
 framedown.pack()
 
